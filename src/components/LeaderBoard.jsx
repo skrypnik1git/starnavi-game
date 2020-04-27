@@ -15,7 +15,7 @@ class LeaderBoard extends Component {
     render() {
         const { leaderBoard } = this.props
         return (
-            <div>
+            <div className='mt-3'>
                 <div className='font-italic ml-1 h3'>
                     Leader Board
                 </div>

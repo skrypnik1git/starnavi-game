@@ -1,13 +1,16 @@
-import { FORM } from "../actions"
+import { FORM, GAME } from "../actions"
 
 const initialState = {
     gameModes: {},
 	pickedMode: '',
 	playerName: '',
     formError: false,
+    showLoading: false,
 }
 
 export const formReducer = (state = initialState, action) => {
+    const { payload } = action;
+
     switch(action.type) {
         case FORM.DATA_REQUEST:
             return {
@@ -17,7 +20,7 @@ export const formReducer = (state = initialState, action) => {
         case FORM.DATA_SUCCESS:
             return {
                 ...state,
-                gameModes: action.payload,       
+                gameModes: payload,       
             }
         case FORM.DATA_ERROR:
             return {
@@ -25,10 +28,27 @@ export const formReducer = (state = initialState, action) => {
                 formError: true,
             }
         case FORM.SUBMIT:
+            const { pickedMode, playerName } = payload;
             return {
                 ...state,
-                pickedMode: action.payload.pickedMode,
-                playerName: action.payload.playerName,
+                pickedMode,
+                playerName,
+            }
+        case FORM.LOADING.SHOW: 
+            return {
+                ...state,
+                showLoading: true
+            }
+        case FORM.LOADING.CLOSE: 
+            return {
+                ...state,
+                showLoading: false
+            }
+        case GAME.DELETE_STATE: 
+            return {
+                ...state,
+                pickedMode: '',
+	            playerName: '',
             }
         default:
             return { ...state }

@@ -6,6 +6,7 @@ const initialState = {
 }
 
 export const leaderBoardReducer = (state = initialState, action) => {
+    const { payload } = action
     switch(action.type) {
         case LEADERBOARD.DATA_REQUEST:
             return {
@@ -15,7 +16,7 @@ export const leaderBoardReducer = (state = initialState, action) => {
         case LEADERBOARD.DATA_SUCCESS:
             return {
                 ...state,
-                leaderBoard: action.payload,       
+                leaderBoard: payload,       
             }
         case LEADERBOARD.DATA_ERROR:
             return {

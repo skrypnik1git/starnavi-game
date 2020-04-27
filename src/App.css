@@ -5,5 +5,55 @@
 .cell {
   width: 30px;
   height: 30px;
-  background-color: antiquewhite;
+  background-color: #ffb3da;
+}
+
+.easyMode {
+  height: 150px;
+  width: 150px;
+}
+
+.normalMode {
+  height: 300px;
+  width: 300px;
+}
+
+.hardMode {
+  height: 450px;
+  width: 450px;
+}
+
+.bc-blue {
+  background-color: lightblue;
+}
+
+.bc-green {
+  background-color: green;
+}
+
+.bc-red {
+  background-color: red;
+}
+
+.cover-div {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 8000;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  opacity: 0.7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader {
+  z-index: 9000;
+}
+
+.loading-number {
+  color: rgb(0, 191, 255);
+  font-size: 30px;
 }

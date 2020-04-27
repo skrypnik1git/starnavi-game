@@ -1,23 +1,32 @@
-import React, { Component } from 'react';
+import React, { memo } from 'react';
 import MainForm from '../components/MainForm';
-import LeaderBoard from '../components/LeaderBoard';
 import GameField from '../components/GameField';
+import { connect } from 'react-redux';
 
-class Home extends Component {
-    render() {
+
+const Home = props => {
+        let { formError } = props
         return (
-            <div className='d-flex'>
-                <div className='col-7'>
+            <div className='d-flex flex-wrap justify-content-center align-items-center'>
+                <div className='w-100 col-6 d-flex flex-column justify-content-start align-items-center'>
                     <MainForm />
-                    <GameField />
-                </div>
-                <div className='col-5'>
-                    <LeaderBoard />
+                    {formError ? 
+                        <div className="w-100 mt-4 p-2 border border-danger text-center">
+                            Something goes wrong with data for the game. Please try again later.
+                        </div> 
+                        :
+                        <GameField />
+                    }
                 </div>
             </div>
             
         )
+}
+
+function mapStateToProps(state) {
+    return {
+        formError: state.form.formError,
     }
 }
 
-export default Home
+export default connect(mapStateToProps, {})(memo(Home))
