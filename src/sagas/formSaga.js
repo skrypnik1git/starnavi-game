@@ -1,6 +1,6 @@
 import { put, takeEvery, select } from 'redux-saga/effects'
 import { FORM, GAME } from "../actions";
-import { getData } from '../helpers';
+import { getData, getRandomIndex } from '../helpers';
 
 function* workerFormDataRequest() {
     try {
@@ -29,6 +29,7 @@ function* submitGameSettings(action) {
         type: GAME.GET_CELLSDATA, 
         payload: { arrayOfCells: indexArray, delay, winningNumber }
     });
+    yield put({type: GAME.CREATE_PICKEDCELL, payload: getRandomIndex(quantityOfCells - 1)})
 }
 
 export default function* watchFormDataRequest() {

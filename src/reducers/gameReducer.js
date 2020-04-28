@@ -3,7 +3,7 @@ import { GAME } from "../actions"
 
 const initialState = {
 	delay: 0,
-    pickedCell: 6,
+    pickedCell: null,
     userCells: [],
     computerCells: [],
     arrayOfCells: [],

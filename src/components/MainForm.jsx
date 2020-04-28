@@ -8,38 +8,40 @@ import GameLoader from './GameLoader'
 
 
 class MainForm extends Component {
+    state = {
+        pickedMode: '',
+        playerName: '',
+    }
+
     componentDidMount() {
         this.props.getGameModes()
     }
 
-    loadingAndSubmit = (obj) => {
+    loadingAndSubmit = () => {
         const { loadingClose, submitGameData } =this.props
+        const { pickedMode, playerName } = this.state;
         loadingClose()
-        submitGameData(obj)
+        submitGameData({ pickedMode, playerName })
     }
 
     onSubmit = e => {
         e.preventDefault()
         const { loadingShow } =this.props
-        
-        // use names
-        const [select, input] = e.target.children
-        if (input.value.trim() === "") {
+        const { mode, name } = e.target
+
+        if (name.value.trim() === "") {
             return false
         }
+        this.setState({ pickedMode: mode.value, playerName: name.value })
         loadingShow()
-        setTimeout(this.loadingAndSubmit, 5000, { pickedMode: select.value, playerName: input.value })
-        // this.loadingAndSubmit()
-        // this.props.submitGameData({ pickedMode: select.value, playerName: input.value })
         
     }
 
     render() {
         const { gameModes, showLoading, pickedMode } = this.props;
-        console.log(showLoading)
         return (
             <form className='d-flex flex-wrap w-100 mt-4' onSubmit={this.onSubmit}>
-                <select className="form-control col-12 col-sm-4 mr-2" defaultValue='' required disabled={!!pickedMode}>
+                <select className="form-control col-12 col-sm-4 mr-2" defaultValue='' required disabled={!!pickedMode} name='mode'>
                     <option disabled hidden value=''>Choose game mode</option>
                     {Object.keys(gameModes)
                         .map( (item, idx) => {
@@ -51,8 +53,8 @@ class MainForm extends Component {
                         })
                     }
                 </select>
-                {showLoading && <GameLoader/>}
-                <input className="form-control col-12 col-sm-4 mr-2" placeholder="Enter your name" required disabled={!!pickedMode}/>
+                {showLoading && <GameLoader onLoaded={this.loadingAndSubmit} />}
+                <input className="form-control col-12 col-sm-4 mr-2" placeholder="Enter your name" required disabled={!!pickedMode} name='name'/>
                 <input 
                     type='submit' 
                     className="btn btn-secondary col-12 col-sm-3 text-wrap" 

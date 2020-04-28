@@ -8,6 +8,7 @@ export default class GameLoader extends Component {
     
     componentDidMount() {
         this.countUpTo3()
+        setTimeout(this.props.onLoaded, 5000)
     }
 
     countUpTo3 = () => {

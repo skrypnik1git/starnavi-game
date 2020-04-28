@@ -1,6 +1,20 @@
 import { put, takeEvery, select } from 'redux-saga/effects'
-import { GAME, FORM } from "../actions";
+import { GAME, FORM, LEADERBOARD } from "../actions";
 import { getRandomIndex, getFormatedDate } from '../helpers';
+
+const sendDataToServer = winner => {
+    const userData = {
+        winner,
+        date: getFormatedDate()
+    }
+    return fetch('https://starnavi-frontend-test-task.herokuapp.com/winners', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    });
+}
 
 /// for ADDPOINT_USER
 
@@ -10,28 +24,37 @@ function* workerUserAddPoint(action) {
     const winner = state.form.playerName
     userCells.push(pickedCell)
     arrayOfCells.splice(arrayOfCells.indexOf(pickedCell), 1)
-
-    const win = userCells.length >= winningNumber;
-
-    const gamePayload = {
-        userCells,
-        arrayOfCells,
-    }
-
-    if (win) {
-        gamePayload.pickedCell = -1;
-    }
-
-    yield put({
-        type: GAME.ADDPOINT.USER.SUCCESS,
-        payload: gamePayload
-    })
     
-    if (win) {
-        yield put({type: GAME.END, payload: winner})
-    } else {
-        yield put({type: GAME.CREATE_PICKEDCELL, payload: arrayOfCells[getRandomIndex(arrayOfCells.length - 1)]})
+    const win = userCells.length >= winningNumber;
+    
+    try {
+        const gamePayload = {
+            userCells,
+            arrayOfCells,
+        }
+
+        if (win) {
+            gamePayload.pickedCell = -1;
+        }
+
+        yield put({
+            type: GAME.ADDPOINT.USER.SUCCESS,
+            payload: gamePayload
+        })
+        
+        if (win) {
+            yield sendDataToServer(winner)
+            yield put({type: GAME.END, payload: winner})
+        } else {
+            yield put({type: GAME.CREATE_PICKEDCELL, payload: arrayOfCells[getRandomIndex(arrayOfCells.length - 1)]})
+        }
+    } catch (error) {
+        if (win) {
+            yield put({type: GAME.END, payload: winner})
+        }
+        yield put({type: LEADERBOARD.DATA_ERROR})
     }
+    
 
 }
 
@@ -74,21 +97,6 @@ function* restartGameSaga(action) {
     } catch(error) {
         console.log(error)
     }
-}
-
-function* sendDataToServer() {
-    const { winner } = yield select(state => state.game)
-    const userData = {
-        winner,
-        date: getFormatedDate()
-    }
-    let response = yield fetch('https://starnavi-frontend-test-task.herokuapp.com/winners', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify(user)
-      });
 }
 
 // root
